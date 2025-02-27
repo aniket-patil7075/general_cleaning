@@ -80,10 +80,23 @@ export default function BookingDatePage() {
       description: "Perfect pick when your schedule is uncertain.",
     },
   ];
-
-  const today = new Date().getDate(); 
-  const dates = Array.from({ length: 9 }, (_, i) => today + i);
+  const getNextNineDays = () => {
+    const today = new Date();
+    const dates = [];
   
+    for (let i = 0; i < 9; i++) {
+      const futureDate = new Date(today);
+      futureDate.setDate(today.getDate() + i);
+      dates.push({
+        day: futureDate.getDate(), 
+        fullDate: futureDate.toISOString().split('T')[0], // Unique full date string
+      });
+    }
+  
+    return dates;
+  };
+  
+  const dates = getNextNineDays();
   const timeSlots = [
     "13:00-13:30",
     "13:30-14:00",
@@ -340,18 +353,16 @@ export default function BookingDatePage() {
                             When would you like your service?
                           </h3>
                           <div className="flex gap-2 overflow-x-auto pb-2">
-                            {dates.map((date) => (
-                              <Button
-                                key={date}
-                                variant={
-                                  selectedDate === date ? "default" : "outline"
-                                }
-                                className="h-12 w-12 rounded-full flex-shrink-0"
-                                onClick={() => setSelectedDate(date)}
-                              >
-                                {date}
-                              </Button>
-                            ))}
+                          {dates.map(({ day, fullDate }) => (
+      <Button
+        key={fullDate} // Using full date as unique key
+        variant={selectedDate === fullDate ? "default" : "outline"}
+        className="h-12 w-12 rounded-full flex-shrink-0"
+        onClick={() => setSelectedDate(fullDate)}
+      >
+        {day}
+      </Button>
+    ))}
                             <Button
                               variant="outline"
                               className="h-12 w-12 rounded-full flex-shrink-0"
@@ -438,7 +449,7 @@ export default function BookingDatePage() {
                         <span className="text-gray-600">Date & Start Time</span>
                         <span>
                           {frequency === "one-time"
-                            ? `${selectedDate} ${currentMonth} 2025`
+                            ? `${selectedDate} `
                             : formattedDates}{" "}
                           {selectedTime}
                         </span>

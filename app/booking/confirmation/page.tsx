@@ -206,8 +206,8 @@ export default function BookingConfirmationPage() {
                         formattedDates.trim() !== "" &&
                         selectedTime
                           ? `${formattedDates}, ${selectedTime}`
-                          : selectedDate && currentMonth && selectedTime
-                          ? `${selectedDate} ${currentMonth}, ${selectedTime}`
+                          : selectedDate && selectedTime
+                          ? `${selectedDate} , ${selectedTime}`
                           : 0}
                       </span>
                     </div>
