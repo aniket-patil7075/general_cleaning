@@ -23,8 +23,9 @@ export default function PaymentMethodPage() {
   const { addressData } = useApiContext();
   const { selectedDates } = useApiContext();
   const { bookingId, setBookingId } = useApiContext();
+  const { instructions } = useApiContext();
 
-  console.log("paymentMethod Id payment: ", paymentMethod);
+  
 
   if (!addressData || addressData.length === 0) {
     console.error("No address data available.");
@@ -72,11 +73,11 @@ export default function PaymentMethodPage() {
     } else if (paymentMethod === "cash") {
       const paymentSuccessful = Math.random() < 5;
       if (paymentSuccessful) {
-        console.log("Payment successful");
+        
         handleSaveHoursCartData();
       }
     } else {
-      console.log("Payment failed");
+      
       setPaymentFailed(true);
       router.push("/booking/payment-failed");
     }
@@ -96,7 +97,7 @@ export default function PaymentMethodPage() {
       customer_information: "",
       matrial: "1",
       plan: plan || "one",
-      note: "",
+      note: instructions || " ",
       refi: "",
     };
 
@@ -114,12 +115,12 @@ export default function PaymentMethodPage() {
         }
       );
 
-      console.log("API Response in payment:", response.data);
+      
 
       if (response.data?.response_code === "booking_place_success_200") {
         const id = response.data.content?.readable_id;
         setBookingId(id);
-        console.log("Booking ID set:", id);
+        
         setShowAlert(true);
         router.push("/booking/confirmation");
       } else {

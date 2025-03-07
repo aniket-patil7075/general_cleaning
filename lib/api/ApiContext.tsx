@@ -43,6 +43,8 @@ type ApiContextType = ApiHooksType & {
   setAttributeId: (value: string) => void;
   transactionReference: string;
   setTransactionReference: (value: string) => void;
+  instructions: string;
+  setInstructions: (value: string) => void;
 };
 
 const ApiContext = createContext<ApiContextType | undefined>(undefined);
@@ -63,11 +65,11 @@ export function ApiProvider({ children }: { children: ReactNode }) {
   const [selectedDate, setSelectedDate] = useState<number | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
 
-
   const [flag, setFlag] = useState<string>("");
   const [paymentMethod, setPaymentMethod] = useState<string>("");
   const [attributeId, setAttributeId] = useState<string>("");
   const [transactionReference, setTransactionReference] = useState<string>("");
+  const [instructions, setInstructions] = useState<string>("");
 
   const fetchAddressData = async () => {
     try {
@@ -130,6 +132,8 @@ export function ApiProvider({ children }: { children: ReactNode }) {
         setAttributeId,
         transactionReference,
         setTransactionReference,
+        instructions,
+        setInstructions,
       }}
     >
       {children}

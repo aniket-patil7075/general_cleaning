@@ -23,13 +23,14 @@ export default function BookingPage() {
   const [hours, setHours] = useState(2);
   const [professionals, setProfessionals] = useState(1);
   const { needMaterials, setNeedMaterials } = useApiContext();
-  const [instructions, setInstructions] = useState("");
+  // const [instructions, setInstructions] = useState("");
   const router = useRouter();
   const [addressData, setAddressData] = useState<AddressDataType>([]);
   const [loading, setLoading] = useState(false);
   const [trendingServices, setTrendingServices] = useState<Service[]>([]);
   const [hoursPrice, setHoursPrice] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
+  const { instructions, setInstructions } = useApiContext();
 
   const { getCustomerAddress } = useApiContext();
 
