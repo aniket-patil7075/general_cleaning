@@ -23,7 +23,6 @@ export function useApi<T>(endpointKey: keyof typeof API_ENDPOINTS): UseApiResult
       setError(null)
 
       try {
-        console.log(`Executing API call to ${endpointKey}:`, { params, body })
         const config: AxiosRequestConfig = {
           url: endpoint.url,
           method: endpoint.method,
@@ -32,7 +31,6 @@ export function useApi<T>(endpointKey: keyof typeof API_ENDPOINTS): UseApiResult
         }
 
         const response = await axios(config)
-        console.log(`API response from ${endpointKey}:`, response.data)
         setData(response.data)
         return response.data
       } catch (err) {

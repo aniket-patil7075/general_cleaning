@@ -24,8 +24,7 @@ export default function PaymentMethodPage() {
   const { selectedDates } = useApiContext();
   const { bookingId, setBookingId } = useApiContext();
   const { instructions } = useApiContext();
-
-  
+  const [loading, setLoading] = useState(false);
 
   if (!addressData || addressData.length === 0) {
     console.error("No address data available.");
@@ -73,17 +72,16 @@ export default function PaymentMethodPage() {
     } else if (paymentMethod === "cash") {
       const paymentSuccessful = Math.random() < 5;
       if (paymentSuccessful) {
-        
         handleSaveHoursCartData();
       }
     } else {
-      
       setPaymentFailed(true);
       router.push("/booking/payment-failed");
     }
   };
 
   const handleSaveHoursCartData = async () => {
+    setLoading(true);
     const postData = {
       multidate: formattedDates || " ",
       payment_method: "cash_after_service",
@@ -115,19 +113,21 @@ export default function PaymentMethodPage() {
         }
       );
 
-      
-
       if (response.data?.response_code === "booking_place_success_200") {
         const id = response.data.content?.readable_id;
         setBookingId(id);
-        
         setShowAlert(true);
-        router.push("/booking/confirmation");
+        setTimeout(() => {
+          setLoading(false);
+          router.push("/booking/confirmation");
+        }, 2000);
       } else {
+        setLoading(false);
         router.push("/booking/payment-failed");
       }
     } catch (error) {
       console.log(error);
+      setShowAlert(true);
     }
   };
 
@@ -172,13 +172,15 @@ export default function PaymentMethodPage() {
                     <Label htmlFor="card">Card payment</Label>
                   </div>
                 </RadioGroup>
-                <Button
-                  type="submit"
-                  className="w-full"
-                  // onClick={handleSaveHoursCartData}
-                >
-                  {paymentFailed ? "Retry Payment" : "Confirm Booking"}
-                </Button>
+                {loading ? (
+                  <div className="flex flex-col items-center mt-4">
+                    <div className="w-12 h-12 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
+                  </div>
+                ) : (
+                  <Button type="submit" className="w-full">
+                    {paymentFailed ? "Retry Payment" : "Confirm Booking"}
+                  </Button>
+                )}
                 {showAlert && (
                   <Alert className="mt-4 bg-green-100">
                     <AlertTitle>Booking Confirmed</AlertTitle>

@@ -29,8 +29,6 @@ export default function BookingConfirmationPage() {
 
   const [loading, setLoading] = useState(true);
 
-  console.log(flag)
-
   const formattedDates = selectedDates
     ? selectedDates
         .map((date) => {
@@ -73,7 +71,6 @@ export default function BookingConfirmationPage() {
         guest_id: "f124d7e0-f815-11ef-b1a6-ad24eae42883",
       });
 
-      console.log("CART : ", response);
 
       if (response?.content?.cart?.data) {
         const cartItems = response.content.cart.data;

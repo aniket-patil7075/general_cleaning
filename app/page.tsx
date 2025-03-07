@@ -68,8 +68,6 @@ export default function Home() {
 
         const servicesData = await servicesResponse.json();
 
-        console.log("SErvice data : ", servicesData);
-
         if (servicesData.content && Array.isArray(servicesData.content.data)) {
           setTrendingServices(servicesData.content.data);
         } else {
@@ -90,7 +88,7 @@ export default function Home() {
     fetchData();
   }, [zoneId]);
 
-  console.log("trending service : ", trendingServices);
+  console.log("Trending service : ", trendingServices )
 
   return (
     <div className="flex flex-col min-h-screen">

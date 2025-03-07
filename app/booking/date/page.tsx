@@ -58,9 +58,6 @@ export default function BookingDatePage() {
   setApiHoursData(hourData);
   setApiProfessionalData(professionalData);
 
-  console.log("selectedDate  : ", selectedDate)
-  console.log("selectedTime  : ", selectedTime)
-
   const handleNextClick = () => {
     router.push("/booking/payment");
   };
@@ -125,8 +122,6 @@ export default function BookingDatePage() {
         offset: 1,
         guest_id: "f124d7e0-f815-11ef-b1a6-ad24eae42883",
       });
-
-      console.log("CART : ", response);
 
       if (response?.content?.cart?.data) {
         const cartItems = response.content.cart.data;

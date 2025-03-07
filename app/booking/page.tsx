@@ -79,7 +79,6 @@ export default function BookingPage() {
         }
       );
 
-      console.log("Response:", response.data);
     } catch (error) {
       console.log(error);
     }
@@ -109,7 +108,6 @@ export default function BookingPage() {
         }
       );
 
-      console.log("Response:", response.data);
     } catch (error) {
       console.log(error);
     }

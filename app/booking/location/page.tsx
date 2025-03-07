@@ -231,13 +231,10 @@ const BookingLocationPage = () => {
   const checkAvailability = async () => {
     if (formData.location) {
       try {
-        console.log("Checking availability for:", formData.location);
-
         const zoneResponse = await apiContext.getZoneId.execute({
           lat: formData.location.lat.toString(),
           lng: formData.location.lng.toString(),
         });
-        console.log("Zone Response:", JSON.stringify(zoneResponse, null, 2));
 
         if (zoneResponse.response_code === "zone_404") {
           setAvailabilityStatus({
@@ -327,20 +324,6 @@ const BookingLocationPage = () => {
       });
 
       const result = await response.json();
-
-      // if (response.ok) {
-      //   console.log(result);
-      //   setShowAddressAlert({
-      //     type: "success",
-      //     message: "Address saved successfully!",
-      //   });
-      // } else {
-      //   console.error(result);
-      //   setShowAddressAlert({
-      //     type: "error",
-      //     message: "Failed to save address. Please try again.",
-      //   });
-      // }
     } catch (error) {
       console.error("Error:", error);
       alert("An error occurred. Please try again.");
@@ -351,7 +334,7 @@ const BookingLocationPage = () => {
     setLoading(true);
     try {
       await Promise.all([handleSubmit()]);
-      checkAvailability();
+      await Promise.all([checkAvailability()]);
     } catch (error) {
       console.error("Error saving cart data:", error);
     } finally {
@@ -362,237 +345,240 @@ const BookingLocationPage = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-     <div className="min-h-screen bg-gray-50 p-4 md:p-8">
-      <div className="mx-auto max-w-6xl">
-        
-        <div className="mb-8">
-          <Link
-            href="/"
-            className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Home
-          </Link>
-          <div className="mt-4 flex items-center gap-2">
-            <h1 className="text-xl font-semibold">Step 1 of 4</h1>
-            <div className="h-1 flex-1 rounded-full bg-gray-200">
-              <div className="h-1 w-1/4 rounded-full bg-blue-500"></div>
+      <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-8">
+            <Link
+              href="/"
+              className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Home
+            </Link>
+            <div className="mt-4 flex items-center gap-2">
+              <h1 className="text-xl font-semibold">Step 1 of 4</h1>
+              <div className="h-1 flex-1 rounded-full bg-gray-200">
+                <div className="h-1 w-1/4 rounded-full bg-blue-500"></div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
-          {/* Main Form */}
-          <div className="md:col-span-2">
-            <>
-              <h2 className="text-2xl font-semibold mb-4">
-                Where do you need the service?
-              </h2>
-              <p className="text-sm text-muted-foreground mb-6">
-                Help our teams get to your place on time by locating it on the
-                map below
-              </p>
+          <div className="grid gap-6 md:grid-cols-3">
+            {/* Main Form */}
+            <div className="md:col-span-2">
+              <>
+                <h2 className="text-2xl font-semibold mb-4">
+                  Where do you need the service?
+                </h2>
+                <p className="text-sm text-muted-foreground mb-6">
+                  Help our teams get to your place on time by locating it on the
+                  map below
+                </p>
 
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Save your address details
-                  </label>
-                  <div className="flex gap-2">
-                    <Button
-                      className={`flex-1 px-4 py-2 border ${
-                        formData.addressType === "home"
-                          ? "bg-black text-white"
-                          : "bg-white text-black"
-                      }`}
-                      onClick={() =>
-                        setFormData({ ...formData, addressType: "home" })
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Save your address details
+                    </label>
+                    <div className="flex gap-2">
+                      <Button
+                        className={`flex-1 px-4 py-2 border ${
+                          formData.addressType === "home"
+                            ? "bg-black text-white"
+                            : "bg-white text-black"
+                        }`}
+                        onClick={() =>
+                          setFormData({ ...formData, addressType: "home" })
+                        }
+                      >
+                        Home
+                      </Button>
+                      <Button
+                        className={`flex-1 px-4 py-2 border ${
+                          formData.addressType === "office"
+                            ? "bg-black text-white"
+                            : "bg-white text-black"
+                        }`}
+                        onClick={() =>
+                          setFormData({ ...formData, addressType: "office" })
+                        }
+                      >
+                        Office
+                      </Button>
+                      <Button
+                        className={`flex-1 px-4 py-2 border ${
+                          formData.addressType === "other"
+                            ? "bg-black text-white"
+                            : "bg-white text-black"
+                        }`}
+                        onClick={() =>
+                          setFormData({ ...formData, addressType: "other" })
+                        }
+                      >
+                        Other
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <Input
+                        placeholder="Full Name"
+                        value={formData.fullName || ""}
+                        onChange={(e) =>
+                          setFormData({ ...formData, fullName: e.target.value })
+                        }
+                        className={!formData.fullName ? "border-red-300" : ""}
+                      />
+                      {!formData.fullName && (
+                        <p className="text-sm text-red-500 mt-1">
+                          This field is required
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <Input
+                        placeholder="Contact Person Number"
+                        value={formData.phone || ""}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            phone: e.target.value,
+                          })
+                        }
+                        className={!formData.phone ? "border-red-300" : ""}
+                      />
+                      {!formData.phone && (
+                        <p className="text-sm text-red-500 mt-1">
+                          This field is required
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Map Search */}
+                  <div className="relative">
+                    <Input
+                      id="pac-input"
+                      type="text"
+                      placeholder="Start typing to find your area"
+                      className="w-full pl-10"
+                      value={formData.location?.address || ""}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          location: {
+                            ...prev.location,
+                            address: e.target.value,
+                            lat: prev.location?.lat ?? 0, // Ensure a default number value
+                            lng: prev.location?.lng ?? 0, // Ensure a default number value
+                          },
+                        }))
                       }
+                    />
+                    <svg
+                      className="absolute left-3 top-3 h-4 w-4 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
                     >
-                      Home
-                    </Button>
-                    <Button
-                      className={`flex-1 px-4 py-2 border ${
-                        formData.addressType === "office"
-                          ? "bg-black text-white"
-                          : "bg-white text-black"
-                      }`}
-                      onClick={() =>
-                        setFormData({ ...formData, addressType: "office" })
-                      }
-                    >
-                      Office
-                    </Button>
-                    <Button
-                      className={`flex-1 px-4 py-2 border ${
-                        formData.addressType === "other"
-                          ? "bg-black text-white"
-                          : "bg-white text-black"
-                      }`}
-                      onClick={() =>
-                        setFormData({ ...formData, addressType: "other" })
-                      }
-                    >
-                      Other
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <div>
-                    <Input
-                      placeholder="Full Name"
-                      value={formData.fullName || ""}
-                      onChange={(e) =>
-                        setFormData({ ...formData, fullName: e.target.value })
-                      }
-                      className={!formData.fullName ? "border-red-300" : ""}
-                    />
-                    {!formData.fullName && (
-                      <p className="text-sm text-red-500 mt-1">
-                        This field is required
-                      </p>
-                    )}
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
+                    </svg>
                   </div>
 
-                  <div>
-                    <Input
-                      placeholder="Contact Person Number"
-                      value={formData.phone || ""}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          phone: e.target.value,
-                        })
-                      }
-                      className={!formData.phone ? "border-red-300" : ""}
-                    />
-                    {!formData.phone && (
-                      <p className="text-sm text-red-500 mt-1">
-                        This field is required
-                      </p>
-                    )}
-                  </div>
-                </div>
+                  <div
+                    id="map"
+                    className="w-full h-[400px] rounded-lg border"
+                  ></div>
 
-                {/* Map Search */}
-                <div className="relative">
-                  <Input
-                    id="pac-input"
-                    type="text"
-                    placeholder="Start typing to find your area"
-                    className="w-full pl-10"
-                    value={formData.location?.address || ""}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        location: {
-                          ...prev.location,
-                          address: e.target.value,
-                          lat: prev.location?.lat ?? 0, // Ensure a default number value
-                          lng: prev.location?.lng ?? 0, // Ensure a default number value
-                        },
-                      }))
-                    }
-                  />
-                  <svg
-                    className="absolute left-3 top-3 h-4 w-4 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-                </div>
+                  <div className=" md:grid md:grid-cols-2 md:gap-4">
+                    <div>
+                      <Input
+                        placeholder="Building Name"
+                        value={formData.buildingName || ""}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            buildingName: e.target.value,
+                          })
+                        }
+                        className={
+                          !formData.buildingName ? "border-red-300" : ""
+                        }
+                      />
+                      {!formData.buildingName && (
+                        <p className="text-sm text-red-500 mt-1">
+                          This field is required
+                        </p>
+                      )}
+                    </div>
 
-                <div
-                  id="map"
-                  className="w-full h-[400px] rounded-lg border"
-                ></div>
-
-                <div className=" md:grid md:grid-cols-2 md:gap-4">
-                  <div>
-                    <Input
-                      placeholder="Building Name"
-                      value={formData.buildingName || ""}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          buildingName: e.target.value,
-                        })
-                      }
-                      className={!formData.buildingName ? "border-red-300" : ""}
-                    />
-                    {!formData.buildingName && (
-                      <p className="text-sm text-red-500 mt-1">
-                        This field is required
-                      </p>
-                    )}
+                    <div>
+                      <Input
+                        placeholder="Apartment/Villa No"
+                        value={formData.apartmentNo || ""}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            apartmentNo: e.target.value,
+                          })
+                        }
+                        className={
+                          !formData.apartmentNo ? "border-red-300" : ""
+                        }
+                      />
+                      {!formData.apartmentNo && (
+                        <p className="text-sm text-red-500 mt-1">
+                          This field is required
+                        </p>
+                      )}
+                    </div>
                   </div>
 
-                  <div>
-                    <Input
-                      placeholder="Apartment/Villa No"
-                      value={formData.apartmentNo || ""}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          apartmentNo: e.target.value,
-                        })
-                      }
-                      className={!formData.apartmentNo ? "border-red-300" : ""}
-                    />
-                    {!formData.apartmentNo && (
-                      <p className="text-sm text-red-500 mt-1">
-                        This field is required
-                      </p>
-                    )}
-                  </div>
-                </div>
+                  <div className=" md:grid md:grid-cols-2 md:gap-4">
+                    <div>
+                      <Input
+                        placeholder="City"
+                        value={formData.city || ""}
+                        onChange={(e) =>
+                          setFormData({ ...formData, city: e.target.value })
+                        }
+                        className={!formData.city ? "border-red-300" : ""}
+                      />
+                      {!formData.city && (
+                        <p className="text-sm text-red-500 mt-1">
+                          This field is required
+                        </p>
+                      )}
+                    </div>
 
-                <div className=" md:grid md:grid-cols-2 md:gap-4">
-                  <div>
-                    <Input
-                      placeholder="City"
-                      value={formData.city || ""}
-                      onChange={(e) =>
-                        setFormData({ ...formData, city: e.target.value })
-                      }
-                      className={!formData.city ? "border-red-300" : ""}
-                    />
-                    {!formData.city && (
-                      <p className="text-sm text-red-500 mt-1">
-                        This field is required
-                      </p>
-                    )}
+                    <div>
+                      <Input
+                        placeholder="Street No"
+                        value={formData.streetNo || ""}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            streetNo: e.target.value,
+                          })
+                        }
+                        className={!formData.streetNo ? "border-red-300" : ""}
+                      />
+                      {!formData.streetNo && (
+                        <p className="text-sm text-red-500 mt-1">
+                          This field is required
+                        </p>
+                      )}
+                    </div>
                   </div>
 
-                  <div>
-                    <Input
-                      placeholder="Street No"
-                      value={formData.streetNo || ""}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          streetNo: e.target.value,
-                        })
-                      }
-                      className={!formData.streetNo ? "border-red-300" : ""}
-                    />
-                    {!formData.streetNo && (
-                      <p className="text-sm text-red-500 mt-1">
-                        This field is required
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                {/* <div className="space-y-4">
+                  {/* <div className="space-y-4">
                   <Button
                     className="mt-4 w-full"
                     size="lg"
@@ -601,52 +587,51 @@ const BookingLocationPage = () => {
                     Save
                   </Button>
                 </div> */}
-              </div>
-            </>
-          </div>
-
-          {/* Booking Summary */}
-          <div className="md:col-span-1">
-            <Card>
-              <CardHeader>
-                <CardTitle>Booking Details</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Address</span>
-                  <span className="text-right">
-                    {formData.location?.address || "No address selected"}
-                  </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Service</span>
-                  <span>Home Cleaning</span>
-                </div>
+              </>
+            </div>
 
-                <div className="border-t pt-4">
+            {/* Booking Summary */}
+            <div className="md:col-span-1">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Booking Details</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Address</span>
+                    <span className="text-right">
+                      {formData.location?.address || "No address selected"}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Service</span>
+                    <span>Home Cleaning</span>
+                  </div>
+
+                  {/* <div className="border-t pt-4">
                   <div className="flex justify-between font-semibold">
                     <span>Total</span>
-                    {/* <span>AED {78.0 * hours * professionals}</span> */}
                   </div>
+                </div> */}
+                </CardContent>
+              </Card>
+
+              {loading ? (
+                <div className="flex flex-col items-center mt-4">
+                  <div className="w-12 h-12 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
                 </div>
-              </CardContent>
-            </Card>
+              ) : (
+                <Button
+                  className="mt-4 w-full"
+                  size="lg"
+                  onClick={handleSaveData}
+                >
+                  Next
+                </Button>
+              )}
 
-            {loading ? (
-              <div className="flex flex-col items-center mt-4">
-                <div className="w-12 h-12 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
-              </div>
-            ) : (
-              <Button
-                className="mt-4 w-full"
-                size="lg"
-                onClick={handleSaveData}
-              >
-                Next
-              </Button>
-            )}
-
-            {/* {availabilityStatus && showAlert && (
+              {/* {availabilityStatus && showAlert && (
               <Alert
                 className={`mt-4 ${
                   availabilityStatus.isAvailable ? "bg-green-100" : "bg-red-100"
@@ -662,50 +647,52 @@ const BookingLocationPage = () => {
                 </AlertDescription>
               </Alert>
             )} */}
-            {availabilityStatus &&
-              showAlert &&
-              !availabilityStatus.isAvailable && (
-                <Dialog open={showAlert} onOpenChange={setShowAlert}>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle className="text-red-600">
-                        Service Unavailable
-                      </DialogTitle>
-                      <DialogDescription>
-                        {availabilityStatus.message}
-                      </DialogDescription>
-                    </DialogHeader>
-                    {/* Close Button */}
-                    <DialogClose asChild>
-                      {/* <button className="absolute top-2 right-2 text-xl font-bold">
+              {availabilityStatus &&
+                showAlert &&
+                !availabilityStatus.isAvailable && (
+                  <Dialog open={showAlert} onOpenChange={setShowAlert}>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle className="text-red-600">
+                          Service Unavailable
+                        </DialogTitle>
+                        <DialogDescription>
+                          {availabilityStatus.message}
+                        </DialogDescription>
+                      </DialogHeader>
+                      {/* Close Button */}
+                      <DialogClose asChild>
+                        {/* <button className="absolute top-2 right-2 text-xl font-bold">
                         ✖
                       </button> */}
-                    </DialogClose>
-                  </DialogContent>
-                </Dialog>
-              )}
+                      </DialogClose>
+                    </DialogContent>
+                  </Dialog>
+                )}
 
-            {showAddressAlert && (
-              <Alert
-                className={`mt-4 ${
-                  showAddressAlert.type === "success"
-                    ? "bg-green-100"
-                    : "bg-red-100"
-                }`}
-              >
-                <AlertTitle>
-                  {showAddressAlert.type === "success"
-                    ? "Saved Successfully"
-                    : "Failed to Save"}
-                </AlertTitle>
-                <AlertDescription>{showAddressAlert.message}</AlertDescription>
-              </Alert>
-            )}
+              {showAddressAlert && (
+                <Alert
+                  className={`mt-4 ${
+                    showAddressAlert.type === "success"
+                      ? "bg-green-100"
+                      : "bg-red-100"
+                  }`}
+                >
+                  <AlertTitle>
+                    {showAddressAlert.type === "success"
+                      ? "Saved Successfully"
+                      : "Failed to Save"}
+                  </AlertTitle>
+                  <AlertDescription>
+                    {showAddressAlert.message}
+                  </AlertDescription>
+                </Alert>
+              )}
+            </div>
           </div>
         </div>
       </div>
     </div>
-   </div>
   );
 };
 

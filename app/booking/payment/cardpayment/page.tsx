@@ -27,13 +27,10 @@ const Page = () => {
 
     // Store the flag value
     setFlag(flagParam || '');
-    console.log('Flag:', flagParam);
-    console.log('Encoded Token:', token);
 
     if (token) {
       try {
-        const decodedToken = atob(token); // Decode Base64 token
-        console.log('Decoded Token:', decodedToken);
+        const decodedToken = atob(token); 
 
         // Convert `&&` to `&` for proper parsing
         const params = new URLSearchParams(decodedToken.replace(/&&/g, '&'));
