@@ -24,6 +24,9 @@ export default function BookingConfirmationPage() {
   const [totalTax, setTotalTax] = useState<cartDataType>([]);
   const [professionalData, setProfessionalData] = useState<cartDataType>([]);
 
+  console.log("formattedDates : ", selectedDates);
+  console.log("select date Material : ", selectedDate);
+
   const { flag, paymentMethod, attributeId, transactionReference } =
     useApiContext();
 
@@ -37,7 +40,7 @@ export default function BookingConfirmationPage() {
           const month = d.toLocaleString("en-US", { month: "long" });
           return `${day} ${month}`;
         })
-        .join(", ") + " 2025"
+        .join(", ") + " "
     : "N/A";
 
   useEffect(() => {
@@ -71,7 +74,6 @@ export default function BookingConfirmationPage() {
         guest_id: "f124d7e0-f815-11ef-b1a6-ad24eae42883",
       });
 
-
       if (response?.content?.cart?.data) {
         const cartItems = response.content.cart.data;
 
@@ -90,7 +92,7 @@ export default function BookingConfirmationPage() {
         const hourTax = hourItem?.tax_amount || 0;
         const professionalTax = professionalItem?.tax_amount || 0;
 
-        setGrandTotal(hourTotalCost + (needMaterials ? 10 : 0));
+        setGrandTotal(hourTotalCost);
 
         setTotalTax(hourTax || 0);
       } else {
@@ -112,146 +114,165 @@ export default function BookingConfirmationPage() {
     }
   }, []);
 
+  console.log("formattedDates:", formattedDates);
+  console.log("selectedDate:", selectedDate);
+  console.log("currentMonth:", currentMonth);
+  console.log("selectedTime:", selectedTime);
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
 
-      {flag === "success" ? <main className="flex-grow bg-gray-50 p-4 md:p-8">
-        <div className="mx-auto max-w-2xl">
-          {loading ? (
-            <div className="flex justify-center items-center h-screen">
-              <div className="flex flex-col items-center">
-                <div className="w-12 h-12 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
+      {flag === "success" ? (
+        <main className="flex-grow bg-gray-50 p-4 md:p-8">
+          <div className="mx-auto max-w-2xl">
+            {loading ? (
+              <div className="flex justify-center items-center h-screen">
+                <div className="flex flex-col items-center">
+                  <div className="w-12 h-12 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
+                </div>
+              </div>
+            ) : (
+              <Card className="mb-8">
+                <CardHeader>
+                  <div className="flex items-center space-x-2">
+                    <CheckCircle className="h-8 w-8 text-green-500" />
+                    <CardTitle className="text-2xl">
+                      Booking Confirmed
+                    </CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-lg text-gray-700 mb-4">
+                    Thank you for your booking. Your service is confirmed for:
+                  </p>
+                  <div className="space-y-4">
+                    <div className="flex justify-between">
+                      <span className="font-medium">Booking ID:</span>
+                      <span>{bookingId ?? attributeId ?? 0}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">Transaction ID:</span>
+                      <span>{transactionReference ?? 0}</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+            <div className="space-y-4">
+              <p className="text-center text-gray-700">
+                We've sent a confirmation email with these details to your
+                registered email address.
+              </p>
+              <div className="flex justify-center space-x-4">
+                <Button asChild>
+                  <Link href="/">Return to Home</Link>
+                </Button>
+                <Button variant="outline" asChild>
+                  <Link href="/bookings">View My Bookings</Link>
+                </Button>
               </div>
             </div>
-          ) : (
-            <Card className="mb-8">
-              <CardHeader>
-                <div className="flex items-center space-x-2">
-                  <CheckCircle className="h-8 w-8 text-green-500" />
-                  <CardTitle className="text-2xl">Booking Confirmed</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-lg text-gray-700 mb-4">
-                  Thank you for your booking. Your service is confirmed for:
-                </p>
-                <div className="space-y-4">
-                  <div className="flex justify-between">
-                    <span className="font-medium">Booking ID:</span>
-                    <span>{bookingId ?? attributeId ?? 0}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-medium">Transaction ID:</span>
-                    <span>{transactionReference ?? 0}</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-          <div className="space-y-4">
-            <p className="text-center text-gray-700">
-              We've sent a confirmation email with these details to your
-              registered email address.
-            </p>
-            <div className="flex justify-center space-x-4">
-              <Button asChild>
-                <Link href="/">Return to Home</Link>
-              </Button>
-              <Button variant="outline" asChild>
-                <Link href="/bookings">View My Bookings</Link>
-              </Button>
-            </div>
           </div>
-        </div>
-      </main> : <main className="flex-grow bg-gray-50 p-4 md:p-8">
-        <div className="mx-auto max-w-2xl">
-          {loading ? (
-            <div className="flex justify-center items-center h-screen">
-              <div className="flex flex-col items-center">
-                <div className="w-12 h-12 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
+        </main>
+      ) : (
+        <main className="flex-grow bg-gray-50 p-4 md:p-8">
+          <div className="mx-auto max-w-2xl">
+            {loading ? (
+              <div className="flex justify-center items-center h-screen">
+                <div className="flex flex-col items-center">
+                  <div className="w-12 h-12 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
+                </div>
+              </div>
+            ) : (
+              <Card className="mb-8">
+                <CardHeader>
+                  <div className="flex items-center space-x-2">
+                    <CheckCircle className="h-8 w-8 text-green-500" />
+                    <CardTitle className="text-2xl">
+                      Booking Confirmed
+                    </CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-lg text-gray-700 mb-4">
+                    Thank you for your booking. Your service is confirmed for:
+                  </p>
+                  <div className="space-y-4">
+                    <div className="flex justify-between">
+                      <span className="font-medium">Booking ID:</span>
+                      <span>{bookingId ?? attributeId ?? 0}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">Service:</span>
+                      <span>{bookingDetails.service}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">Date & Time:</span>
+                      <span>
+                        {formattedDates &&
+                        formattedDates.trim() !== "" &&
+                        selectedTime
+                          ? `${formattedDates}, ${selectedTime}`
+                          : selectedDate && currentMonth && selectedTime
+                          ? `${selectedDate} ${currentMonth}, ${selectedTime}`
+                          : 0}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">Duration:</span>
+                      <span>{apiHoursData ?? hourData ?? "0"} Hours</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">Professionals:</span>
+                      <span>
+                        {apiProfessionalData ?? professionalData ?? "0"}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">Address:</span>
+                      <span className="text-right">
+                        {addressData?.[0]?.address || "No address available"}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">Payment Method:</span>
+                      <span>
+                        {paymentMethod?.trim()
+                          ? paymentMethod
+                          : "Cash after service"}
+                      </span>
+                    </div>
+                    <div className="flex justify-between font-bold">
+                      <span>Total:</span>
+                      <span>
+                        {(Number(apiGrandTotal) || Number(grandTotal) || 0) +
+                          (needMaterials ? 10 : 0)}{" "}
+                        AED
+                      </span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+            <div className="space-y-4">
+              <p className="text-center text-gray-700">
+                We've sent a confirmation email with these details to your
+                registered email address.
+              </p>
+              <div className="flex justify-center space-x-4">
+                <Button asChild>
+                  <Link href="/">Return to Home</Link>
+                </Button>
+                <Button variant="outline" asChild>
+                  <Link href="/bookings">View My Bookings</Link>
+                </Button>
               </div>
             </div>
-          ) : (
-            <Card className="mb-8">
-              <CardHeader>
-                <div className="flex items-center space-x-2">
-                  <CheckCircle className="h-8 w-8 text-green-500" />
-                  <CardTitle className="text-2xl">Booking Confirmed</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-lg text-gray-700 mb-4">
-                  Thank you for your booking. Your service is confirmed for:
-                </p>
-                <div className="space-y-4">
-                  <div className="flex justify-between">
-                    <span className="font-medium">Booking ID:</span>
-                    <span>{bookingId ?? attributeId ?? 0}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-medium">Service:</span>
-                    <span>{bookingDetails.service}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-medium">Date & Time:</span>
-                    <span>
-                      {selectedDate && currentMonth && selectedTime
-                        ? `${selectedDate} ${currentMonth}, ${selectedTime}`
-                        : formattedDates && selectedTime
-                        ? `${formattedDates}, ${selectedTime}`
-                        : 0}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-medium">Duration:</span>
-                    <span>{apiHoursData ?? hourData ?? "0"} Hours</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-medium">Professionals:</span>
-                    <span>
-                      {apiProfessionalData ?? professionalData ?? "0"}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-medium">Address:</span>
-                    <span className="text-right">
-                      {addressData?.[0]?.address || "No address available"}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-medium">Payment Method:</span>
-                    <span>{paymentMethod ?? "Cash after service"}</span>
-                  </div>
-                  <div className="flex justify-between font-bold">
-                    <span>Total:</span>
-                    <span>{apiGrandTotal ?? grandTotal ?? "0"} AED</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-          <div className="space-y-4">
-            <p className="text-center text-gray-700">
-              We've sent a confirmation email with these details to your
-              registered email address.
-            </p>
-            <div className="flex justify-center space-x-4">
-              <Button asChild>
-                <Link href="/">Return to Home</Link>
-              </Button>
-              <Button variant="outline" asChild>
-                <Link href="/bookings">View My Bookings</Link>
-              </Button>
-            </div>
           </div>
-        </div>
-      </main>}
+        </main>
+      )}
 
-
-  
-
-      
       <Footer />
     </div>
   );

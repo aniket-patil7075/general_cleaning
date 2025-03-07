@@ -27,10 +27,11 @@ export default function BookingPage() {
   const router = useRouter();
   const [addressData, setAddressData] = useState<AddressDataType>([]);
   const [loading, setLoading] = useState(false);
-  const [trendingServices, setTrendingServices] = useState<Service[]>([]);
+  // const [trendingServices, setTrendingServices] = useState<Service[]>([]);
   const [hoursPrice, setHoursPrice] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
   const { instructions, setInstructions } = useApiContext();
+  const {trendingServices} = useApiContext();
 
   const { getCustomerAddress } = useApiContext();
 
@@ -130,69 +131,87 @@ export default function BookingPage() {
 
   const zoneId = "a1614dbe-4732-11ee-9702-dee6e8d77be4";
 
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     if (!zoneId) {
+  //       setLoading(false);
+  //       return;
+  //     }
+
+  //     try {
+  //       const [servicesResponse] = await Promise.all([
+  //         fetch(
+  //           `https://test.barakatbayut.com/api/v1/customer/service?offset=1&limit=10`,
+  //           {
+  //             method: "GET",
+  //             headers: {
+  //               "Content-Type": "application/json",
+  //               zoneid: zoneId,
+  //               "x-localization": "en",
+  //             },
+  //           }
+  //         ),
+  //       ]);
+
+  //       if (!servicesResponse.ok) {
+  //         throw new Error("Failed to fetch data");
+  //       }
+
+  //       const servicesData = await servicesResponse.json();
+
+  //       console.log("SErvice Data : ", servicesData);
+
+  //       if (servicesData.content && Array.isArray(servicesData.content.data)) {
+  //         setTrendingServices(servicesData.content.data);
+
+  //         let professionalPrice = null;
+  //         let hoursPrice = null;
+
+  //         servicesData.content.data.forEach((service) => {
+  //           if (Array.isArray(service.variations)) {
+  //             service.variations.forEach((variation) => {
+  //               if (variation.variant_key === "Number-of-Hours") {
+  //                 hoursPrice = variation.price;
+  //               }
+  //             });
+  //           }
+  //         });
+
+  //         setHoursPrice(hoursPrice);
+  //       } else {
+  //         console.error(
+  //           "Unexpected services API response structure:",
+  //           servicesData
+  //         );
+  //         setTrendingServices([]);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);        
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, [zoneId]);
+
+  console.log("serivce dataa : ", trendingServices)
+
   useEffect(() => {
-    const fetchData = async () => {
-      if (!zoneId) {
-        setError("No zone ID provided");
-        setLoading(false);
-        return;
+    let hoursPrice = null;
+  
+    trendingServices.forEach((service) => {
+      if (service.variations) {
+        service.variations.forEach((variation) => {
+          if (variation.variant_key === "Number-of-Hours") {
+            hoursPrice = variation.price;
+          }
+        });
       }
-
-      try {
-        const [servicesResponse] = await Promise.all([
-          fetch(
-            `https://test.barakatbayut.com/api/v1/customer/service?offset=1&limit=10`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                zoneid: zoneId,
-                "x-localization": "en",
-              },
-            }
-          ),
-        ]);
-
-        if (!servicesResponse.ok) {
-          throw new Error("Failed to fetch data");
-        }
-
-        const servicesData = await servicesResponse.json();
-
-        if (servicesData.content && Array.isArray(servicesData.content.data)) {
-          setTrendingServices(servicesData.content.data);
-
-          let professionalPrice = null;
-          let hoursPrice = null;
-
-          servicesData.content.data.forEach((service) => {
-            if (Array.isArray(service.variations)) {
-              service.variations.forEach((variation) => {
-                if (variation.variant_key === "Number-of-Hours") {
-                  hoursPrice = variation.price;
-                }
-              });
-            }
-          });
-
-          setHoursPrice(hoursPrice);
-        } else {
-          console.error(
-            "Unexpected services API response structure:",
-            servicesData
-          );
-          setTrendingServices([]);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setError("An error occurred while fetching data. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [zoneId]);
+    });
+  
+    setHoursPrice(hoursPrice);
+  }, [trendingServices]);
 
   useEffect(() => {
     setTotalPrice(

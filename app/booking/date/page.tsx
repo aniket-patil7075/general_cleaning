@@ -36,8 +36,8 @@ type AddressDataType = any[];
 type cartDataType = any[];
 
 export default function BookingDatePage() {
-  const {selectedDate, setSelectedDate} = useApiContext();
-  const {selectedTime, setSelectedTime} =useApiContext();
+  const { selectedDate, setSelectedDate } = useApiContext();
+  const { selectedTime, setSelectedTime } = useApiContext();
   const [frequency, setFrequency] = useState<string>("one-time");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [addressData, setAddressData] = useState<AddressDataType>([]);
@@ -123,6 +123,8 @@ export default function BookingDatePage() {
         guest_id: "f124d7e0-f815-11ef-b1a6-ad24eae42883",
       });
 
+      console.log("card Data : ", response);
+
       if (response?.content?.cart?.data) {
         const cartItems = response.content.cart.data;
 
@@ -141,10 +143,9 @@ export default function BookingDatePage() {
         const hourTax = hourItem?.tax_amount || 0;
         const professionalTax = professionalItem?.tax_amount || 0;
 
-        setGrandTotal(hourTotalCost + (needMaterials ? 10 : 0));
-        
+        setGrandTotal(hourTotalCost);
 
-        setTotalTax(hourTax  || 0);
+        setTotalTax(hourTax || 0);
       } else {
         console.warn("No data found in response");
       }
@@ -466,8 +467,9 @@ export default function BookingDatePage() {
                         <div className="flex justify-between font-semibold">
                           <span>Total</span>
                           <span>
-                            {grandTotal * professionalData} AED{" "}
-                            <span className="text-sm">(Tax Included)</span>
+                            {grandTotal * professionalData +
+                              (needMaterials ? 10 : 0)}{" "}
+                            AED <span className="text-sm">(Tax Included)</span>
                           </span>
                         </div>
                       </div>

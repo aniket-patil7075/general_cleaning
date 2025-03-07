@@ -15,13 +15,7 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { useEffect, useState } from "react";
 import Script from "next/script";
-
-interface Service {
-  id: string;
-  name: string;
-  thumbnail: string;
-  short_description: string;
-}
+import { useApiContext } from "@/lib/api/ApiContext";
 
 declare global {
   interface Window {
@@ -32,63 +26,18 @@ declare global {
 export default function Home() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  // const zoneId = searchParams.get("zoneId");
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [trendingServices, setTrendingServices] = useState<Service[]>([]);
-  const zoneId = "a1614dbe-4732-11ee-9702-dee6e8d77be4";
+  const { trendingServices } = useApiContext();
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (!zoneId) {
-        setError("No zone ID provided");
-        setLoading(false);
-        return;
-      }
+    if (!trendingServices) {
       setLoading(true);
-      try {
-        const [servicesResponse] = await Promise.all([
-          fetch(
-            `https://test.barakatbayut.com/api/v1/customer/service?offset=1&limit=10`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                zoneid: zoneId,
-                "x-localization": "en",
-              },
-            }
-          ),
-        ]);
-
-        if (!servicesResponse.ok) {
-          throw new Error("Failed to fetch data");
-        }
-
-        const servicesData = await servicesResponse.json();
-
-        if (servicesData.content && Array.isArray(servicesData.content.data)) {
-          setTrendingServices(servicesData.content.data);
-        } else {
-          console.error(
-            "Unexpected services API response structure:",
-            servicesData
-          );
-          setTrendingServices([]);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setError("An error occurred while fetching data. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [zoneId]);
-
-  console.log("Trending service : ", trendingServices )
+    } else {
+      setLoading(false);
+    }
+  }, [trendingServices]);
 
   return (
     <div className="flex flex-col min-h-screen">

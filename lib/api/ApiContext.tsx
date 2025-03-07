@@ -10,6 +10,13 @@ import {
 import { useApi } from "./useApi";
 import { API_ENDPOINTS } from "./config";
 
+interface Service {
+  id: string;
+  name: string;
+  thumbnail: string;
+  short_description: string;
+}
+
 type ApiHooksType = {
   [K in keyof typeof API_ENDPOINTS]: ReturnType<typeof useApi>;
 };
@@ -45,6 +52,8 @@ type ApiContextType = ApiHooksType & {
   setTransactionReference: (value: string) => void;
   instructions: string;
   setInstructions: (value: string) => void;
+  trendingServices: any;
+  setTrendingServices: (value: any) => void;
 };
 
 const ApiContext = createContext<ApiContextType | undefined>(undefined);
@@ -70,6 +79,10 @@ export function ApiProvider({ children }: { children: ReactNode }) {
   const [attributeId, setAttributeId] = useState<string>("");
   const [transactionReference, setTransactionReference] = useState<string>("");
   const [instructions, setInstructions] = useState<string>("");
+  const [trendingServices, setTrendingServices] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const zoneId = "a1614dbe-4732-11ee-9702-dee6e8d77be4";
 
   const fetchAddressData = async () => {
     try {
@@ -92,7 +105,55 @@ export function ApiProvider({ children }: { children: ReactNode }) {
     fetchAddressData();
   }, []);
 
-  // Call useApi for each endpoint at the top level
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!zoneId) {
+        setError("No zone ID provided");
+        setLoading(false);
+        return;
+      }
+      setLoading(true);
+      try {
+        const [servicesResponse] = await Promise.all([
+          fetch(
+            `https://test.barakatbayut.com/api/v1/customer/service?offset=1&limit=10`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                zoneid: zoneId,
+                "x-localization": "en",
+              },
+            }
+          ),
+        ]);
+
+        if (!servicesResponse.ok) {
+          throw new Error("Failed to fetch data");
+        }
+
+        const servicesData = await servicesResponse.json();
+
+        if (servicesData.content && Array.isArray(servicesData.content.data)) {
+          setTrendingServices(servicesData.content.data);
+        } else {
+          console.error(
+            "Unexpected services API response structure:",
+            servicesData
+          );
+          setTrendingServices([]);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setError("An error occurred while fetching data. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [zoneId]);
+
   for (const key in API_ENDPOINTS) {
     if (API_ENDPOINTS.hasOwnProperty(key)) {
       apiHooks[key as keyof typeof API_ENDPOINTS] = useApi(
@@ -134,6 +195,8 @@ export function ApiProvider({ children }: { children: ReactNode }) {
         setTransactionReference,
         instructions,
         setInstructions,
+        trendingServices,
+        setTrendingServices,
       }}
     >
       {children}
