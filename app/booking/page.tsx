@@ -195,20 +195,32 @@ export default function BookingPage() {
   //   fetchData();
   // }, [zoneId]);
 
-  console.log("serivce dataa : ", trendingServices)
+    useEffect(() => {
+      if (!trendingServices) {
+        setLoading(true);
+      } else {
+        setLoading(false);
+      }
+    }, [trendingServices]);
 
   useEffect(() => {
     let hoursPrice = null;
   
-    trendingServices.forEach((service) => {
-      if (service.variations) {
-        service.variations.forEach((variation) => {
-          if (variation.variant_key === "Number-of-Hours") {
-            hoursPrice = variation.price;
-          }
-        });
-      }
-    });
+    if (!trendingServices || !Array.isArray(trendingServices)) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+      trendingServices.forEach((service) => {
+        if (service.variations && Array.isArray(service.variations)) {
+          service.variations.forEach((variation) => {
+            if (variation.variant_key === "Number-of-Hours") {
+              hoursPrice = variation.price;
+            }
+          });
+        }
+      });
+    }
+    
   
     setHoursPrice(hoursPrice);
   }, [trendingServices]);

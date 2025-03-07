@@ -81,7 +81,9 @@ export default function BookingDatePage() {
     },
   ];
 
-  const dates = Array.from({ length: 9 }, (_, i) => i + 3);
+  const today = new Date().getDate(); 
+  const dates = Array.from({ length: 9 }, (_, i) => today + i);
+  
   const timeSlots = [
     "13:00-13:30",
     "13:30-14:00",

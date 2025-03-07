@@ -24,9 +24,6 @@ export default function BookingConfirmationPage() {
   const [totalTax, setTotalTax] = useState<cartDataType>([]);
   const [professionalData, setProfessionalData] = useState<cartDataType>([]);
 
-  console.log("formattedDates : ", selectedDates);
-  console.log("select date Material : ", selectedDate);
-
   const { flag, paymentMethod, attributeId, transactionReference } =
     useApiContext();
 
@@ -114,11 +111,6 @@ export default function BookingConfirmationPage() {
     }
   }, []);
 
-  console.log("formattedDates:", formattedDates);
-  console.log("selectedDate:", selectedDate);
-  console.log("currentMonth:", currentMonth);
-  console.log("selectedTime:", selectedTime);
-
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
@@ -169,7 +161,7 @@ export default function BookingConfirmationPage() {
                   <Link href="/">Return to Home</Link>
                 </Button>
                 <Button variant="outline" asChild>
-                  <Link href="/bookings">View My Bookings</Link>
+                  <Link href="/">View My Bookings</Link>
                 </Button>
               </div>
             </div>

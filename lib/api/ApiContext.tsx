@@ -54,6 +54,14 @@ type ApiContextType = ApiHooksType & {
   setInstructions: (value: string) => void;
   trendingServices: any;
   setTrendingServices: (value: any) => void;
+  hourData: number | null;
+  setHourData: (value: number | null) => void;
+  professionalData: number | null;
+  setProfessionalData: (value: number | null) => void;
+  totalTax: number | null;
+  setTotalTax: (value: number | null) => void;
+  cartData: any;
+  setCartData: (value: any) => void;
 };
 
 const ApiContext = createContext<ApiContextType | undefined>(undefined);
@@ -80,9 +88,14 @@ export function ApiProvider({ children }: { children: ReactNode }) {
   const [transactionReference, setTransactionReference] = useState<string>("");
   const [instructions, setInstructions] = useState<string>("");
   const [trendingServices, setTrendingServices] = useState<any>(null);
+  const [hourData, setHourData] = useState<number | null>(null);
+  const [professionalData, setProfessionalData] = useState<number | null>(null);
+  const [totalTax, setTotalTax] = useState<number | null>(null);
+  const [cartData, setCartData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const zoneId = "a1614dbe-4732-11ee-9702-dee6e8d77be4";
+
 
   const fetchAddressData = async () => {
     try {
@@ -154,6 +167,46 @@ export function ApiProvider({ children }: { children: ReactNode }) {
     fetchData();
   }, [zoneId]);
 
+  const fetchCartData = async () => {
+
+
+    try {
+      const response = await fetch(
+        "https://test.barakatbayut.com/api/v1/customer/cart/list?limit=100&offset=1&&guest_id=f124d7e0-f815-11ef-b1a6-ad24eae42883"
+      );
+      const result = await response.json();
+      console.log("Cart Data:", result);
+
+      if (result?.content?.cart?.data) {
+        const cartItems = result.content.cart.data;
+
+        const hourItem = cartItems.find(
+          (item) => item.variant_key === "Number-of-Hours"
+        );
+        const professionalItem = cartItems.find(
+          (item) => item.variant_key === "Professionals"
+        );
+
+        setHourData(hourItem ? hourItem.quantity : 0);
+        setProfessionalData(professionalItem ? professionalItem.quantity : 0);
+
+        setGrandTotal(hourItem?.total_cost || 0);
+        setTotalTax((hourItem?.tax_amount || 0) + (professionalItem?.tax_amount || 0));
+        
+        setCartData(cartItems);
+      } else {
+        console.warn("No data found in response");
+      }
+    } catch (err) {
+      console.error("Error fetching data:", err);
+    } finally {
+    }
+  };
+
+  useEffect(() => {
+    fetchCartData();
+  }, []);
+
   for (const key in API_ENDPOINTS) {
     if (API_ENDPOINTS.hasOwnProperty(key)) {
       apiHooks[key as keyof typeof API_ENDPOINTS] = useApi(
@@ -197,6 +250,7 @@ export function ApiProvider({ children }: { children: ReactNode }) {
         setInstructions,
         trendingServices,
         setTrendingServices,
+        hourData, setHourData , professionalData, setProfessionalData , totalTax, setTotalTax , cartData, setCartData ,
       }}
     >
       {children}
