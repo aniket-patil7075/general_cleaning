@@ -36,7 +36,7 @@ declare global {
 
 export default function Home() {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
