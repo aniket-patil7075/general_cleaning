@@ -243,7 +243,7 @@ export default function Home() {
                       avatar: "/placeholder.svg",
                     },
                     {
-                      name: "Aisha Rahman",
+                      name: "Lina Omar",
                       role: "Homeowner",
                       content:
                         "Their deep cleaning service transformed my home! Every corner was spotless, and the freshness lasted for weeks.",
