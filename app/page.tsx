@@ -1,6 +1,17 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Database, CreditCard, Atom, BarChart, Lock, Zap } from "lucide-react";
+import {
+  Database,
+  CreditCard,
+  Atom,
+  BarChart,
+  Lock,
+  Zap,
+  Sparkles,
+  Layers,
+  Star,
+  Crown,
+} from "lucide-react";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -61,16 +72,16 @@ export default function Home() {
                 <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
                   <div className="space-y-6">
                     <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
-                      Build Your SaaS <br />
-                      <span className="text-orange-500">Faster Than Ever</span>
+                      Sparkling clean spaces <br />
+                      <span className="text-orange-500">with expert care</span>
                     </h1>
                     <p className="text-lg text-muted-foreground max-w-[600px]">
-                      Launch your SaaS product in record time with our powerful,
-                      ready-to-use template. Packed with modern technologies and
-                      essential integrations.
+                      Experience professional cleaning that leaves your space
+                      spotless, fresh, and hygienic, ensuring a healthier,
+                      cleaner, and more refreshing living or working environment
                     </p>
                     <Button className="rounded-full gap-2 group" size="lg">
-                      Deploy your own
+                      Book your service
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -225,24 +236,24 @@ export default function Home() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {[
                     {
-                      name: "Alex Johnson",
-                      role: "CEO, TechStart",
+                      name: "Mike",
+                      role: "Business Owner",
                       content:
-                        "This SaaS template has been a game-changer for our startup. We launched in half the time we expected!",
+                        "Thank you! That was very helpful! The servicemen were very professional and very cautious about safety.",
                       avatar: "/placeholder.svg",
                     },
                     {
-                      name: "Sarah Lee",
-                      role: "CTO, InnovateCo",
+                      name: "Aisha Rahman",
+                      role: "Homeowner",
                       content:
-                        "The integration capabilities are top-notch. It's like this template was custom-built for our needs.",
+                        "Their deep cleaning service transformed my home! Every corner was spotless, and the freshness lasted for weeks.",
                       avatar: "/placeholder.svg",
                     },
                     {
-                      name: "Mike Chen",
-                      role: "Founder, DataDrive",
+                      name: "Yusuf Patel",
+                      role: "Restaurant Owner",
                       content:
-                        "I'm impressed by the scalability. As our user base grew, the platform handled it with ease.",
+                        "General cleaning services are outstanding! Our dining area stays spotless, ensuring a hygienic and welcoming atmosphere for customers.",
                       avatar: "/placeholder.svg",
                     },
                   ].map((testimonial, index) => (
@@ -289,42 +300,52 @@ export default function Home() {
 
             {/* Features Section */}
             <section className="container py-12 md:py-24 lg:py-32">
-              <div className="grid gap-8 md:grid-cols-3">
-                {/* Feature 1 */}
+              <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+                {/* General Cleaning */}
                 <div className="space-y-4">
                   <div className="bg-orange-500 text-white p-3 rounded-lg w-fit">
-                    <Atom className="h-6 w-6" />
+                    <Sparkles className="h-6 w-6" />
                   </div>
-                  <h3 className="text-xl font-bold">Next.js and React</h3>
+                  <h3 className="text-xl font-bold">General Cleaning</h3>
                   <p className="text-muted-foreground">
-                    Leverage the power of modern web technologies for optimal
-                    performance and developer experience.
+                    Keep your home or office fresh and tidy with our reliable
+                    general cleaning services.
                   </p>
                 </div>
 
-                {/* Feature 2 */}
+                {/* Deep Cleaning */}
                 <div className="space-y-4">
                   <div className="bg-orange-500 text-white p-3 rounded-lg w-fit">
-                    <Database className="h-6 w-6" />
+                    <Layers className="h-6 w-6" />
                   </div>
-                  <h3 className="text-xl font-bold">
-                    Postgres and Drizzle ORM
-                  </h3>
+                  <h3 className="text-xl font-bold">Deep Cleaning</h3>
                   <p className="text-muted-foreground">
-                    Robust database solution with an intuitive ORM for efficient
-                    data management and scalability.
+                    Experience a thorough and detailed cleaning that removes
+                    dirt, germs, and hidden grime.
                   </p>
                 </div>
 
-                {/* Feature 3 */}
+                {/* Golden Cleaning */}
                 <div className="space-y-4">
                   <div className="bg-orange-500 text-white p-3 rounded-lg w-fit">
-                    <CreditCard className="h-6 w-6" />
+                    <Star className="h-6 w-6" />
                   </div>
-                  <h3 className="text-xl font-bold">Stripe Integration</h3>
+                  <h3 className="text-xl font-bold">Golden Cleaning</h3>
                   <p className="text-muted-foreground">
-                    Seamless payment processing and subscription management with
-                    industry-leading Stripe integration.
+                    Premium cleaning solutions with exceptional attention to
+                    detail for a spotless space.
+                  </p>
+                </div>
+
+                {/* VIP Cleaning */}
+                <div className="space-y-4">
+                  <div className="bg-orange-500 text-white p-3 rounded-lg w-fit">
+                    <Crown className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-xl font-bold">VIP Cleaning</h3>
+                  <p className="text-muted-foreground">
+                    Exclusive, high-end cleaning services ensuring the highest
+                    standards of hygiene and luxury.
                   </p>
                 </div>
               </div>
@@ -336,21 +357,21 @@ export default function Home() {
                 <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
                   <div className="space-y-4">
                     <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
-                      Ready to launch your SaaS?
+                      Experience Premium Cleaning Services
                     </h2>
                     <p className="text-lg text-muted-foreground max-w-[600px]">
-                      Our template provides everything you need to get your SaaS
-                      up and running quickly. Don't waste time on boilerplate -
-                      focus on what makes your product unique.
+                      From general cleaning to VIP treatment, we offer top-notch
+                      services tailored to your needs. Enjoy a spotless space
+                      effortlessly.
                     </p>
                   </div>
                   <div className="flex justify-end">
-                    <Button
+                    {/* <Button
                       variant="outline"
                       className="rounded-full gap-2 group"
                       size="lg"
                     >
-                      View the code
+                      View the services
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -366,7 +387,7 @@ export default function Home() {
                         <path d="M5 12h14"></path>
                         <path d="m12 5 7 7-7 7"></path>
                       </svg>
-                    </Button>
+                    </Button> */}
                   </div>
                 </div>
               </div>
