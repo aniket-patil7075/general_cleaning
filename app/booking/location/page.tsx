@@ -301,13 +301,13 @@ const BookingLocationPage = () => {
       address: formData.location?.address || 0,
       address_label: formData.location?.address || 0,
       address_type: "service",
-      city: formData.city, // Ensure it's a number
+      city: formData.city, 
       country: formData.location?.address.split(" - ").pop() || "Dubai",
       street: formData.streetNo,
       house: formData.buildingName,
       floor: formData.apartmentNo || 1,
-      zip_code: formData.zipCode || "", // If not provided, send empty string
-      zone_id: formData.zoneId || "", // If not provided, send empty string
+      zip_code: formData.zipCode || "", 
+      zone_id: formData.zoneId || "", 
       lat: formData.location?.lat || 0,
       lon: formData.location?.lng || 0,
       contact_person_name: formData.fullName,

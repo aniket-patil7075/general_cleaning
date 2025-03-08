@@ -389,9 +389,7 @@ export default function BookingDatePage() {
                               onClick={() => setSelectedTime(time)}
                             >
                               {time}
-                              {/* <span className="absolute -top-2 right-0 bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded-full">
-                                AED 5 Extra
-                              </span> */}
+                              
                             </Button>
                           ))}
                         </div>
