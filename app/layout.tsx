@@ -3,6 +3,9 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ApiProvider } from "@/lib/api/ApiContext";
+import FacebookPixel from "@/components/marketing/facebook-pixel"
+import GoogleAnalytics from "@/components/marketing/google-analytics"
+import LocalBusinessSchema from "@/components/marketing/local-business-schema"
 import baraket_favicon from "../public/baraket_favicon.png"
 
 const inter = Inter({ subsets: ["latin"] });
@@ -26,6 +29,9 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <ApiProvider>{children}</ApiProvider>
+        <FacebookPixel />
+        <GoogleAnalytics />
+        <LocalBusinessSchema />
       </body>
     </html>
   );

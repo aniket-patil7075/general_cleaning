@@ -27,6 +27,7 @@ import { Footer } from "@/components/footer";
 import { useEffect, useState } from "react";
 import Script from "next/script";
 import { useApiContext } from "@/lib/api/ApiContext";
+import { useFacebookPixel } from "@/hooks/use-facebook-pixel"
 
 declare global {
   interface Window {
@@ -41,6 +42,14 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { trendingServices } = useApiContext();
+  const { trackServiceView } = useFacebookPixel()
+
+  useEffect(() => {
+    if (trendingServices && trendingServices.length > 0) {
+      // Track the first service view
+      trackServiceView(trendingServices[0].name)
+    }
+  }, [trendingServices])
 
   useEffect(() => {
     if (!trendingServices) {

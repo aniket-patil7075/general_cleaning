@@ -397,7 +397,7 @@ export default function BookingDatePage() {
 
                       {/* Cancellation Policy */}
                       <div className="flex items-start gap-2 text-sm text-gray-600 bg-gray-50 p-4 rounded-lg">
-                        <div className="h-5 w-5 text-gray-400">ℹ️</div>
+                        <div className="h-5 w-5 text-gray-400 cursor-pointer">ℹ️</div>
                         <div>
                           Enjoy free cancellation up to 6 hours before your
                           booking start time.

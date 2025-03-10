@@ -1,13 +1,12 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import barkat_main_logo from "../public/barkat_main_logo.png";
+import barkat_main_logo from "../public/Baraket_main.png";
 import Image from "next/image";
 
 export function Header() {
   return (
     <header className="container flex items-center justify-between py-4">
       <div className="flex items-center gap-2">
-        {/* <img src="./" alt="Barakat Bayut Logo" /> */}
         <Image
           src={barkat_main_logo}
           alt="Barakat Bayut Logo"
@@ -16,7 +15,7 @@ export function Header() {
       </div>
       <div className="flex items-center gap-4">
         <Link
-          href="#pricing"
+          href="/"
           className="text-sm font-medium text-muted-foreground hover:text-foreground"
         >
           Pricing

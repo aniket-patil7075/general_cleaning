@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import barkat_main_logo from "../public/barkat_main_logo.png";
+import barkat_main_logo from "../public/Baraket_main.png";
 
 export function Footer() {
   return (

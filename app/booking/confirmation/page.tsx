@@ -8,6 +8,7 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { useApiContext } from "@/lib/api/ApiContext";
 import { useEffect, useState } from "react";
+import { useFacebookPixel } from "@/hooks/use-facebook-pixel"
 
 type cartDataType = any[];
 
@@ -23,7 +24,7 @@ export default function BookingConfirmationPage() {
   const [grandTotal, setGrandTotal] = useState<cartDataType>([]);
   const [totalTax, setTotalTax] = useState<cartDataType>([]);
   const [professionalData, setProfessionalData] = useState<cartDataType>([]);
-
+  const { trackBookingComplete } = useFacebookPixel()
   const { flag, paymentMethod, attributeId, transactionReference } =
     useApiContext();
 
@@ -43,21 +44,17 @@ export default function BookingConfirmationPage() {
   useEffect(() => {
     if (bookingId || attributeId) {
       setLoading(false);
+
+      // Track the booking completion event
+      const totalAmount = (Number(apiGrandTotal) || Number(grandTotal) || 0) + (needMaterials ? 10 : 0)
+      trackBookingComplete(bookingId || attributeId || "0", totalAmount)
     }
-  }, [bookingId, attributeId]);
+  }, [bookingId, attributeId, apiGrandTotal, grandTotal, needMaterials])
 
   const currentMonth = new Date().toLocaleString("en-US", { month: "long" });
 
   const bookingDetails = {
-    // bookingId: bookingId || "BK12345",
     service: "Home Cleaning",
-    // date: formattedDates || selectedDate || 0,
-    // time: "13:00-15:00",
-    // duration: "2 hours",
-    // professionals: 1,
-    // address: "73 Financial Center Rd - Downtown Dubai - Dubai - United Arab Emirates",
-    // paymentMethod: "Cash after service",
-    // total: "AED 83.00",
   };
 
   const { getCartData } = useApiContext();
