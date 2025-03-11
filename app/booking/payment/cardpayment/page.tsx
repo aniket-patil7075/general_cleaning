@@ -1,10 +1,12 @@
 "use client";
+
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Header } from '@/components/header';
 import React, { useState, useEffect, Suspense } from 'react';
 import { useApiContext } from '@/lib/api/ApiContext';
 
-const PageContent = () => {
+// Client-side component that uses `useSearchParams`
+const PaymentRedirectHandler = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -50,22 +52,25 @@ const PageContent = () => {
   }, [searchParams, router]);
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Header />
+    <>
       {loading ? (
         <div className="flex justify-center items-center h-screen">
           <div className="w-12 h-12 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
         </div>
       ) : null}
-    </div>
+    </>
   );
 };
 
+// Main page component
 const Page = () => {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <PageContent />
-    </Suspense>
+    <div className="flex flex-col min-h-screen">
+      <Header />
+      <Suspense fallback={<div>Loading...</div>}>
+        <PaymentRedirectHandler />
+      </Suspense>
+    </div>
   );
 };
 

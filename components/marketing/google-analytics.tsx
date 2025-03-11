@@ -1,31 +1,43 @@
-"use client"
+"use client";
 
-import { useEffect } from "react"
-import { usePathname, useSearchParams } from "next/navigation"
-import Script from "next/script"
+import { useEffect, useMemo, Suspense } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import Script from "next/script";
 
 // Google Analytics ID from environment variable
-const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
+const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
-export default function GoogleAnalytics() {
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
+// Client-side component that uses `useSearchParams`
+const GoogleAnalyticsTracker = () => {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  // Memoize search params to prevent unnecessary re-renders
+  const searchParamsString = useMemo(() => searchParams.toString(), [searchParams]);
 
   useEffect(() => {
     if (pathname && window.gtag) {
       // Send page view with path
       window.gtag("config", GA_MEASUREMENT_ID, {
         page_path: pathname,
-      })
+      });
     }
-  }, [pathname, searchParams])
+  }, [pathname, searchParamsString]);
 
-  // Don't render anything if no measurement ID is provided
-  if (!GA_MEASUREMENT_ID) return null
+  return null; // This component doesn't render anything
+};
+
+export default function GoogleAnalytics() {
+  // Don't render anything if no GA ID is provided
+  if (!GA_MEASUREMENT_ID) return null;
 
   return (
-    <>
-      <Script strategy="afterInteractive" src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`} />
+    <Suspense fallback={<div>Loading Google Analytics...</div>}>
+      <GoogleAnalyticsTracker />
+      <Script
+        strategy="afterInteractive"
+        src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+      />
       <Script
         id="google-analytics"
         strategy="afterInteractive"
@@ -40,7 +52,6 @@ export default function GoogleAnalytics() {
           `,
         }}
       />
-    </>
-  )
+    </Suspense>
+  );
 }
-
